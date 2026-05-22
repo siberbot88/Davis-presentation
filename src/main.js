@@ -103,6 +103,18 @@ const marginColor = value => {
   if (margin >= 0.18) return chartColors.seaGreen;
   return chartColors.airForceBlue;
 };
+const revenueLevelMeta = (items, item) => {
+  const sorted = [...(items || [])].sort((a, b) => safeNumber(a.sales) - safeNumber(b.sales));
+  const index = Math.max(0, sorted.findIndex(row => row.quarter === item.quarter));
+  const levels = [
+    { label: "Revenue rendah", color: chartColors.coolSteel },
+    { label: "Revenue sedang", color: chartColors.airForceBlue },
+    { label: "Revenue tinggi", color: chartColors.primary },
+    { label: "Revenue tertinggi", color: chartColors.seaGreen }
+  ];
+
+  return levels[Math.min(index, levels.length - 1)];
+};
 const storyCard = (label, value, note, tone = "neutral", badge = null) => ({
   label,
   value,
@@ -374,18 +386,14 @@ function renderTrenSales(data) {
     value: d => d.sales,
     showAllLabels: true,
     labelFormatter: formatCompactCurrency,
-    color: d => {
-      if (d.quarter === FOCUS_QUARTER) return chartColors.primary;
-      if (d.quarterLabel === peakSales.quarterLabel) return chartColors.seaGreen;
-      if (safeNumber(d.profit) < 0) return chartColors.error;
-      return chartColors.airForceBlue;
-    },
+    color: d => revenueLevelMeta(quarters, d).color,
     tooltip: quarterTooltip,
     insights: quarters.map(item => {
-      if (item.quarter === FOCUS_QUARTER) return { tone: "warning", text: `${item.quarterLabel}: outlook ${formatCompactCurrency(item.sales)}` };
-      if (item.quarterLabel === peakSales.quarterLabel) return { tone: "positive", text: `${item.quarterLabel}: peak revenue ${formatCompactCurrency(item.sales)}` };
-      if (item.quarterLabel === lowProfit.quarterLabel) return { tone: "negative", text: `${item.quarterLabel}: profit terendah ${formatCompactCurrency(item.profit)}` };
-      return { tone: "neutral", text: `${item.quarterLabel}: margin ${formatPercent(item.profitMargin)}` };
+      const level = revenueLevelMeta(quarters, item);
+      return {
+        color: level.color,
+        text: `${item.quarterLabel}: ${level.label} ${formatCompactCurrency(item.sales)}`
+      };
     })
   });
 

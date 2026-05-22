@@ -508,6 +508,7 @@ export function renderLineChart(container, data, options) {
       .data(options.insights)
       .join("div")
       .attr("class", d => `chart-insight-chip ${d.tone || ""}`)
+      .attr("style", d => d.color ? `border-color: ${d.color}; color: ${d.color};` : null)
       .text(d => d.text);
   }
 }
