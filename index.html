@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profitability Furniture Q4 2026 Superstore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+  </head>
+  <body>
+    <main class="presentation-shell">
+      <nav class="slide-tabs" aria-label="Navigasi dashboard">
+        <button class="tab-button is-active" data-tab="pembuka"><span>1</span> PEMBUKA</button>
+        <button class="tab-button" data-tab="overview"><span>2</span> OVERVIEW</button>
+        <button class="tab-button" data-tab="tren-sales"><span>3</span> MOMENTUM</button>
+        <button class="tab-button" data-tab="kategori"><span>4</span> SUB-CATEGORY</button>
+        <button class="tab-button" data-tab="region"><span>5</span> ROOT CAUSE</button>
+        <button class="tab-button" data-tab="customer"><span>6</span> CUSTOMER</button>
+        <button class="tab-button" data-tab="kesimpulan"><span>7</span> KESIMPULAN</button>
+      </nav>
+
+      <section class="slide-panel is-active" id="tab-pembuka">
+        <header class="slide-header">
+          <p class="slide-eyebrow">1 Pembuka</p>
+          <h1 id="title-pembuka">Furniture Mendorong Revenue Q4, tetapi Margin Perlu Diuji</h1>
+          <p class="slide-subtitle" id="subtitle-pembuka">Fokus analisis: revenue, profit, margin, discount, sub-category, region, dan customer Furniture pada Q4 2026.</p>
+        </header>
+        <div class="visual-grid">
+          <div class="metric-grid" id="hero-kpis"></div>
+          <article class="chart-card">
+            <div class="chart-card-header">
+              <h2 id="chart-title-opening-monthly">Revenue Furniture Q4 Bergerak per Bulan</h2>
+            </div>
+            <div class="chart-host" id="opening-monthly-sales"></div>
+          </article>
+          <div class="insight-grid" id="opening-insight"></div>
+          <div class="so-what-host" id="opening-note"></div>
+        </div>
+      </section>
+
+      <section class="slide-panel" id="tab-overview">
+        <header class="slide-header">
+          <p class="slide-eyebrow">2 Overview</p>
+          <h1 id="title-overview">Revenue Furniture Q4 Perlu Dibandingkan dengan Margin Kategori Lain</h1>
+          <p class="slide-subtitle" id="subtitle-overview">Q4 2026 menjadi fokus utama, sementara Q3 digunakan sebagai pembanding untuk membaca perubahan Furniture.</p>
+        </header>
+        <div class="visual-grid">
+          <article class="chart-card half">
+            <div class="chart-card-header"><h2 id="chart-title-overview-sales">Revenue Kategori Q4: Furniture Dibanding Kategori Lain</h2></div>
+            <div class="chart-host" id="overview-sales-year"></div>
+          </article>
+          <article class="chart-card half">
+            <div class="chart-card-header"><h2 id="chart-title-overview-profit">Margin Kategori Q4 Menentukan Kualitas Revenue</h2></div>
+            <div class="chart-host" id="overview-profit-year"></div>
+          </article>
+          <article class="chart-card">
+            <div class="chart-card-header"><h2>Ringkasan Kategori Q4</h2></div>
+            <div id="overview-table"></div>
+          </article>
+          <div class="insight-grid" id="overview-insight"></div>
+          <div class="so-what-host" id="overview-note"></div>
+        </div>
+      </section>
+
+      <section class="slide-panel" id="tab-tren-sales">
+        <header class="slide-header">
+          <p class="slide-eyebrow">3 Momentum</p>
+          <h1 id="title-tren">Margin Furniture Q4 Menentukan Kualitas Momentum Tahun Depan</h1>
+          <p class="slide-subtitle" id="subtitle-tren">Tren Q1 sampai Q4 2026 menguji apakah tekanan profit Furniture hanya terjadi di Q4 atau berulang sepanjang tahun.</p>
+        </header>
+        <div class="visual-grid">
+          <article class="chart-card">
+            <div class="chart-card-header"><h2 id="chart-title-trend-sales">Revenue Furniture per Quarter 2026</h2></div>
+            <div class="chart-host tall" id="trend-sales-line"></div>
+          </article>
+          <article class="chart-card half">
+            <div class="chart-card-header"><h2 id="chart-title-trend-profit">Profit Furniture per Quarter 2026</h2></div>
+            <div class="chart-host" id="trend-profit-bar"></div>
+          </article>
+          <article class="chart-card half">
+            <div class="chart-card-header"><h2>Revenue Besar Perlu Diuji dengan Margin</h2></div>
+            <div class="chart-host" id="trend-scatter"></div>
+          </article>
+          <div class="insight-grid" id="trend-insight"></div>
+          <div class="so-what-host" id="trend-note"></div>
+        </div>
+      </section>
+
+      <section class="slide-panel" id="tab-kategori">
+        <header class="slide-header">
+          <p class="slide-eyebrow">4 Sub-Category</p>
+          <h1 id="title-kategori">Sub-Category Furniture Menjelaskan Sumber Profit Leakage Q4</h1>
+          <p class="slide-subtitle" id="subtitle-kategori">Sub-category Furniture dinilai dari revenue, profit, margin, discount, dan cost ratio agar sumber tekanan profit terlihat jelas.</p>
+        </header>
+        <div class="visual-grid">
+          <article class="chart-card half">
+            <div class="chart-card-header"><h2 id="chart-title-category-sales">Revenue Sub-Category Furniture Q4</h2></div>
+            <div class="chart-host" id="category-sales"></div>
+          </article>
+          <article class="chart-card half">
+            <div class="chart-card-header"><h2 id="chart-title-category-margin">Margin Sub-Category Furniture Q4</h2></div>
+            <div class="chart-host" id="category-margin"></div>
+          </article>
+          <article class="chart-card">
+            <div class="chart-card-header"><h2>Profit Sub-Category Furniture Q4</h2></div>
+            <div class="chart-host tall" id="subcategory-profit"></div>
+          </article>
+          <div class="insight-grid" id="category-insight"></div>
+          <div class="so-what-host" id="category-note"></div>
+        </div>
+      </section>
+
+      <section class="slide-panel" id="tab-region">
+        <header class="slide-header">
+          <p class="slide-eyebrow">5 Root Cause</p>
+          <h1 id="title-region">Diskon dan Cost Burden Menekan Margin Furniture Q4</h1>
+          <p class="slide-subtitle" id="subtitle-region">Karena database tidak menyediakan komponen biaya aktual, cost structure dibaca sebagai proxy Sales minus Profit.</p>
+        </header>
+        <div class="visual-grid">
+          <article class="chart-card half">
+            <div class="chart-card-header"><h2 id="chart-title-region-sales">Discount vs Margin Sub-Category Furniture</h2></div>
+            <div class="chart-host" id="region-sales"></div>
+          </article>
+          <article class="chart-card half">
+            <div class="chart-card-header"><h2 id="chart-title-region-profit">Cost Ratio Sub-Category Furniture</h2></div>
+            <div class="chart-host" id="region-profit"></div>
+          </article>
+          <article class="chart-card">
+            <div class="chart-card-header"><h2>Ringkasan Region Furniture Q4</h2></div>
+            <div id="region-table"></div>
+          </article>
+          <div class="insight-grid" id="region-insight"></div>
+          <div class="so-what-host" id="region-note"></div>
+        </div>
+      </section>
+
+      <section class="slide-panel" id="tab-customer">
+        <header class="slide-header">
+          <p class="slide-eyebrow">6 Customer</p>
+          <h1 id="title-customer">Kerugian Furniture Perlu Dibaca dari Region dan Customer</h1>
+          <p class="slide-subtitle" id="subtitle-customer">Customer Furniture dinilai dari revenue, profit, margin, order, dan discount agar prioritas retensi lebih tepat.</p>
+        </header>
+        <div class="visual-grid">
+          <article class="chart-card">
+            <div class="chart-card-header"><h2 id="chart-title-customer-top">Top Customer Furniture: Revenue dan Profit Q4</h2></div>
+            <div class="chart-host tall" id="customer-top-sales"></div>
+          </article>
+          <article class="chart-card half">
+            <div class="chart-card-header"><h2>Profit Region Furniture Q4</h2></div>
+            <div class="chart-host" id="segment-sales"></div>
+          </article>
+          <article class="chart-card half">
+            <div class="chart-card-header"><h2>Top Loss Orders Furniture Q4</h2></div>
+            <div class="chart-host" id="segment-profit"></div>
+          </article>
+          <div class="insight-grid" id="customer-insight"></div>
+          <div class="so-what-host" id="customer-note"></div>
+        </div>
+      </section>
+
+      <section class="slide-panel" id="tab-kesimpulan">
+        <header class="slide-header">
+          <p class="slide-eyebrow">7 Kesimpulan</p>
+          <h1 id="title-kesimpulan">Furniture Perlu Strategi Margin Baru untuk Tahun Depan</h1>
+          <p class="slide-subtitle" id="subtitle-kesimpulan">Prioritas Q1 tahun depan diarahkan pada sub-category, region, dan customer Furniture dengan profit leakage terbesar.</p>
+        </header>
+        <div class="visual-grid">
+          <div class="insight-grid" id="summary-insights"></div>
+          <article class="chart-card">
+            <div class="chart-card-header"><h2>Action yang Perlu Diprioritaskan</h2></div>
+            <div class="recommendation-grid" id="recommendation-box"></div>
+          </article>
+          <div class="so-what-host three" id="summary-note"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/vendor/d3/d3.min.js"></script>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
