@@ -294,7 +294,7 @@ function renderPembuka(data) {
   renderInsightNote("#opening-note", {
     label: "Implikasi Bisnis",
     tone: marginTone(furniture.profitMargin),
-    text: `${FOCUS_CATEGORY} mencatat revenue ${formatCurrency(furniture.sales)} pada ${focusLabel} dengan margin ${formatPercent(furniture.profitMargin)}. Prioritas analisis adalah menemukan sumber profit leakage sebelum target tahun depan ditetapkan.`
+    text: `${FOCUS_CATEGORY} membuka Q4 dengan revenue ${formatCurrency(furniture.sales)}, tetapi profit ${formatCurrency(furniture.profit)} dan margin ${formatPercent(furniture.profitMargin)} menunjukkan tekanan profitabilitas. Permintaan masih kuat, namun rencana Q1 perlu diarahkan pada kontrol margin, bukan penambahan volume semata.`
   });
 }
 
@@ -360,7 +360,7 @@ function renderOverview(data) {
   renderInsightNote("#overview-note", {
     label: "Insight Utama",
     tone: safeNumber(furniture.profitMargin) < safeNumber(bestMarginCategory.profitMargin) ? "warning" : "positive",
-    text: `${FOCUS_CATEGORY} menyumbang ${formatPercent(furnitureShare(data))} dari revenue Q4, tetapi hanya menghasilkan ${formatPercent(furnitureProfitShare(data))} dari profit. Gap ini menunjukkan revenue belum berubah menjadi profit yang seimbang.`
+    text: `Dalam konteks kategori, ${FOCUS_CATEGORY} menyumbang ${formatPercent(furnitureShare(data))} revenue Q4, tetapi profit share hanya ${formatPercent(furnitureProfitShare(data))}. Ketidakseimbangan ini menunjukkan kontribusi penjualan belum sejalan dengan kontribusi laba.`
   });
 }
 
@@ -369,6 +369,7 @@ function renderTrenSales(data) {
   const peakSales = maxBy(quarters, "sales");
   const lowProfit = minBy(quarters, "profit");
   const q4 = quarters.find(item => item.quarter === FOCUS_QUARTER) || {};
+  const q3 = quarters.find(item => item.quarter === COMPARISON_QUARTER) || {};
   const q4Rank = rankByDescending(quarters, "sales", q4);
 
   const quarterTooltip = d => furnitureTooltip(d.quarterLabel, [
@@ -428,7 +429,7 @@ function renderTrenSales(data) {
   renderInsightNote("#trend-note", {
     label: "Catatan Analisis",
     tone: q4.quarterLabel === peakSales.quarterLabel ? "positive" : "warning",
-    text: `${focusLabel} berada di posisi ${q4Rank} dari empat quarter 2026 untuk revenue ${FOCUS_CATEGORY}. Posisi ini menjadi sinyal awal apakah target tahun depan perlu agresif atau lebih selektif.`
+    text: `${focusLabel} menjadi puncak revenue ${FOCUS_CATEGORY} sebesar ${formatCurrency(q4.sales)}, namun profit turun dari ${formatCurrency(q3.profit)} di ${comparisonLabel} menjadi ${formatCurrency(q4.profit)}. Kenaikan penjualan belum berkualitas karena profit melemah menjelang outlook Q1.`
   });
 }
 
@@ -495,7 +496,7 @@ function renderKategori(data) {
   renderInsightNote("#category-note", {
     label: "Prioritas Perhatian",
     tone: safeNumber(worstSub.profit) < 0 ? "negative" : "warning",
-    text: `${worstSub.subCategory || "-"} mencatat profit terendah sebesar ${formatCurrency(worstSub.profit)} dengan margin ${formatPercent(worstSub.profitMargin)}. Sub-category ini menjadi prioritas utama untuk evaluasi pricing dan discount.`
+    text: `${worstSub.subCategory || "-"} menjadi titik konflik utama: profit ${formatCurrency(worstSub.profit)}, margin ${formatPercent(worstSub.profitMargin)}, cost ratio ${formatPercent(worstSub.costRatio)}. Sub-category ini menunjukkan profit leakage di level produk, sehingga pricing dan discount perlu dikoreksi sebelum volume diperbesar.`
   });
 }
 
@@ -563,7 +564,7 @@ function renderRegion(data) {
   renderInsightNote("#region-note", {
     label: "Insight Utama",
     tone: marginTone(worstRegion.profitMargin),
-    text: `${highestDiscount.subCategory || "-"} memiliki discount tertinggi, sementara ${worstRegion.region || "-"} mencatat margin region terendah. Evaluasi batas discount dan product mix perlu dilakukan sebelum strategi penjualan tahun depan dijalankan.`
+    text: `Masalah tidak berhenti di produk. ${highestDiscount.subCategory || "-"} membawa discount tertinggi ${formatPercent(highestDiscount.averageDiscount)}, sementara ${worstRegion.region || "-"} menjadi region margin terendah ${formatPercent(worstRegion.profitMargin)}. Q1 perlu mengunci discount dan memilih region yang tidak menggerus profit.`
   });
 }
 
@@ -631,8 +632,8 @@ function renderCustomer(data) {
   ]);
 
   const customerText = safeNumber(worstCustomer.profit) < 0
-    ? `${worstCustomer.customerName || "-"} menghasilkan revenue Furniture besar tetapi profit negatif ${formatCurrency(worstCustomer.profit)}. Akun ini perlu ditinjau sebelum dijadikan prioritas retensi.`
-    : `${topCustomer.customerName || "-"} mencatat sales Furniture Q4 terbesar sebesar ${formatCurrency(topCustomer.sales)}. Retensi customer utama tetap perlu mempertimbangkan profit dan discount.`;
+    ? `Profil customer menunjukkan risiko retensi berbasis revenue: ${topCustomer.customerName || "-"} mencatat revenue ${formatCurrency(topCustomer.sales)}, sedangkan ${worstCustomer.customerName || "-"} menjadi loss terbesar ${formatCurrency(worstCustomer.profit)}. Prioritas Q1 perlu berbasis margin dan profit per order.`
+    : `${topCustomer.customerName || "-"} menjadi customer revenue terbesar ${formatCurrency(topCustomer.sales)} dengan profit ${formatCurrency(topCustomer.profit)}. Ini peluang retensi, tetapi tetap perlu batas discount agar order besar tidak berubah menjadi sumber leakage Q1.`;
   renderInsightNote("#customer-note", {
     label: "Insight Utama",
     tone: safeNumber(worstCustomer.profit) < 0 ? "negative" : "warning",
@@ -669,17 +670,17 @@ function renderKesimpulan(data) {
     {
       label: "Sinyal Positif",
       tone: safeNumber(furniture.profit) >= 0 ? "positive" : "warning",
-      text: `${FOCUS_CATEGORY} masih mencatat revenue Q4 ${formatCurrency(furniture.sales)} dengan kontribusi region utama dari ${topRegion.region || "-"}.`
+      text: `${FOCUS_CATEGORY} masih menunjukkan permintaan kuat: revenue Q4 ${formatCurrency(furniture.sales)} dan kontribusi terbesar dari ${topRegion.region || "-"}. Peluang ini layak dipertahankan hanya jika setiap order baru memenuhi guardrail margin Q1.`
     },
     {
       label: "Risiko Utama",
       tone: safeNumber(worstSub.profit) < 0 ? "negative" : "warning",
-      text: `${worstSub.subCategory || "-"}, ${worstRegion.region || "-"}, dan ${worstCustomer.customerName || "-"} menjadi titik utama profit leakage Q4.`
+      text: `Risiko utama terkonsentrasi, bukan menyebar rata: ${worstSub.subCategory || "-"} rugi ${formatCurrency(worstSub.profit)}, ${worstRegion.region || "-"} margin ${formatPercent(worstRegion.profitMargin)}, dan ${worstCustomer.customerName || "-"} profit ${formatCurrency(worstCustomer.profit)}. Fokus Q1 harus dimulai dari titik leakage ini.`
     },
     {
       label: "Arahan Keputusan",
       tone: "positive",
-      text: `Target tahun depan perlu fokus pada margin control, batas discount, dan prioritas customer Furniture yang menghasilkan profit positif.`
+      text: `Arah keputusan sudah jelas: jalankan pilot margin control Q1 dengan guardrail discount, review pricing untuk sub-category loss, dan prioritas customer yang terbukti memberi profit per order positif.`
     }
   ]);
 }
