@@ -16,7 +16,10 @@ const asyncRoute = handler => async (req, res) => {
     console.error(error);
     res.status(500).json({
       error: "Database query failed",
-      message: error.message
+      message: error?.message || String(error),
+      code: error?.code || null,
+      sqlMessage: error?.sqlMessage || null,
+      sqlState: error?.sqlState || null
     });
   }
 };
@@ -152,53 +155,95 @@ router.get("/sales-by-quarter", asyncRoute(async (req, res) => {
   const category = req.query.category || null;
   const categoryClause = category ? `AND ${C.category} = ?` : "";
   const params = category ? [year, category] : [year];
+
   const rows = await queryRows(`
     SELECT
-      QUARTER(${C.orderDate}) AS quarter,
-      CONCAT('Q', QUARTER(${C.orderDate}), ' ', YEAR(${C.orderDate})) AS quarterLabel,
-      SUM(${C.sales}) AS sales,
-      SUM(${C.profit}) AS profit,
-      SUM(${C.quantity}) AS quantity,
-      COUNT(DISTINCT ${C.orderId}) AS orders,
-      COUNT(DISTINCT ${C.customerId}) AS customers,
-      AVG(${C.discount}) AS averageDiscount,
-      SUM(${C.profit}) / NULLIF(SUM(${C.sales}), 0) AS profitMargin
-    FROM ${ORDER_TABLE}
-    WHERE YEAR(${C.orderDate}) = ?
-      ${categoryClause}
-    GROUP BY YEAR(${C.orderDate}), QUARTER(${C.orderDate})
-    ORDER BY quarter;
+      year,
+      quarter,
+      CONCAT('Q', quarter, ' ', year) AS quarterLabel,
+      sales,
+      profit,
+      quantity,
+      orders,
+      customers,
+      averageDiscount,
+      profitMargin
+    FROM (
+      SELECT
+        YEAR(${C.orderDate}) AS year,
+        QUARTER(${C.orderDate}) AS quarter,
+        SUM(${C.sales}) AS sales,
+        SUM(${C.profit}) AS profit,
+        SUM(${C.quantity}) AS quantity,
+        COUNT(DISTINCT ${C.orderId}) AS orders,
+        COUNT(DISTINCT ${C.customerId}) AS customers,
+        AVG(${C.discount}) AS averageDiscount,
+        SUM(${C.profit}) / NULLIF(SUM(${C.sales}), 0) AS profitMargin
+      FROM ${ORDER_TABLE}
+      WHERE YEAR(${C.orderDate}) = ?
+        ${categoryClause}
+      GROUP BY
+        YEAR(${C.orderDate}),
+        QUARTER(${C.orderDate})
+    ) quarterly
+    ORDER BY year, quarter;
   `, params);
+
   res.json(rows);
 }));
 
 router.get("/category-by-quarter", asyncRoute(async (req, res) => {
   const year = Number.parseInt(req.query.year || "2026", 10);
   const category = req.query.category || "Furniture";
+
   const rows = await queryRows(`
     SELECT
-      QUARTER(${C.orderDate}) AS quarter,
-      CONCAT('Q', QUARTER(${C.orderDate}), ' ', YEAR(${C.orderDate})) AS quarterLabel,
-      ${C.category} AS category,
-      SUM(${C.sales}) AS sales,
-      SUM(${C.profit}) AS profit,
-      SUM(${C.quantity}) AS quantity,
-      COUNT(DISTINCT ${C.orderId}) AS orders,
-      COUNT(DISTINCT ${C.customerId}) AS customers,
-      AVG(${C.discount}) AS averageDiscount,
-      SUM(${C.sales}) / NULLIF(COUNT(DISTINCT ${C.orderId}), 0) AS averageOrderValue,
-      SUM(${C.profit}) / NULLIF(SUM(${C.sales}), 0) AS profitMargin,
-      SUM(${C.profit}) / NULLIF(COUNT(DISTINCT ${C.orderId}), 0) AS profitPerOrder,
-      SUM(${C.profit}) / NULLIF(SUM(${C.quantity}), 0) AS profitPerUnit,
-      SUM(${C.sales} - ${C.profit}) AS estimatedCostBurden,
-      SUM(${C.sales} - ${C.profit}) / NULLIF(SUM(${C.sales}), 0) AS costRatio,
-      SUM(CASE WHEN ${C.profit} < 0 THEN 1 ELSE 0 END) AS lossRows
-    FROM ${ORDER_TABLE}
-    WHERE YEAR(${C.orderDate}) = ?
-      AND ${C.category} = ?
-    GROUP BY YEAR(${C.orderDate}), QUARTER(${C.orderDate}), ${C.category}
+      year,
+      quarter,
+      CONCAT('Q', quarter, ' ', year) AS quarterLabel,
+      category,
+      sales,
+      profit,
+      quantity,
+      orders,
+      customers,
+      averageDiscount,
+      averageOrderValue,
+      profitMargin,
+      profitPerOrder,
+      profitPerUnit,
+      estimatedCostBurden,
+      costRatio,
+      lossRows
+    FROM (
+      SELECT
+        YEAR(${C.orderDate}) AS year,
+        QUARTER(${C.orderDate}) AS quarter,
+        ${C.category} AS category,
+        SUM(${C.sales}) AS sales,
+        SUM(${C.profit}) AS profit,
+        SUM(${C.quantity}) AS quantity,
+        COUNT(DISTINCT ${C.orderId}) AS orders,
+        COUNT(DISTINCT ${C.customerId}) AS customers,
+        AVG(${C.discount}) AS averageDiscount,
+        SUM(${C.sales}) / NULLIF(COUNT(DISTINCT ${C.orderId}), 0) AS averageOrderValue,
+        SUM(${C.profit}) / NULLIF(SUM(${C.sales}), 0) AS profitMargin,
+        SUM(${C.profit}) / NULLIF(COUNT(DISTINCT ${C.orderId}), 0) AS profitPerOrder,
+        SUM(${C.profit}) / NULLIF(SUM(${C.quantity}), 0) AS profitPerUnit,
+        SUM(${C.sales} - ${C.profit}) AS estimatedCostBurden,
+        SUM(${C.sales} - ${C.profit}) / NULLIF(SUM(${C.sales}), 0) AS costRatio,
+        SUM(CASE WHEN ${C.profit} < 0 THEN 1 ELSE 0 END) AS lossRows
+      FROM ${ORDER_TABLE}
+      WHERE YEAR(${C.orderDate}) = ?
+        AND ${C.category} = ?
+      GROUP BY
+        YEAR(${C.orderDate}),
+        QUARTER(${C.orderDate}),
+        ${C.category}
+    ) quarterly
     ORDER BY quarter;
   `, [year, category]);
+
   res.json(rows);
 }));
 
@@ -239,10 +284,10 @@ router.get("/overview-by-year", asyncRoute(async (req, res) => {
 
 router.get("/overview-by-quarter", asyncRoute(async (req, res) => {
   const { whereClause, params } = buildDateFilter(parseDateScope(req));
+
   const rows = await queryRows(`
     WITH quarterly AS (
       SELECT
-        CONCAT(YEAR(${C.orderDate}), '-Q', QUARTER(${C.orderDate})) AS quarterKey,
         YEAR(${C.orderDate}) AS year,
         QUARTER(${C.orderDate}) AS quarter,
         SUM(${C.sales}) AS sales,
@@ -254,10 +299,12 @@ router.get("/overview-by-quarter", asyncRoute(async (req, res) => {
         SUM(${C.profit}) / NULLIF(SUM(${C.sales}), 0) AS profitMargin
       FROM ${ORDER_TABLE}
       ${whereClause}
-      GROUP BY YEAR(${C.orderDate}), QUARTER(${C.orderDate})
+      GROUP BY
+        YEAR(${C.orderDate}),
+        QUARTER(${C.orderDate})
     )
     SELECT
-      quarterKey,
+      CONCAT(year, '-Q', quarter) AS quarterKey,
       year,
       quarter,
       sales,
