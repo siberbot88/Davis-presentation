@@ -676,16 +676,26 @@ function renderKesimpulan(data) {
   ]);
 }
 
-function renderAll() {
+const tabRenderers = {
+  pembuka: renderPembuka,
+  overview: renderOverview,
+  "tren-sales": renderTrenSales,
+  kategori: renderKategori,
+  region: renderRegion,
+  customer: renderCustomer,
+  kesimpulan: renderKesimpulan
+};
+
+const getActiveTab = () => document.querySelector(".tab-button.is-active")?.dataset.tab || "pembuka";
+
+function renderActiveTab(tab = getActiveTab()) {
   if (!analyticsData) return;
   renderNarrativeTitles(analyticsData);
-  renderPembuka(analyticsData);
-  renderOverview(analyticsData);
-  renderTrenSales(analyticsData);
-  renderKategori(analyticsData);
-  renderRegion(analyticsData);
-  renderCustomer(analyticsData);
-  renderKesimpulan(analyticsData);
+  tabRenderers[tab]?.(analyticsData);
+}
+
+function renderAll() {
+  renderActiveTab();
 }
 
 const setupTabs = () => {
@@ -701,7 +711,8 @@ const setupTabs = () => {
         panel.classList.toggle("is-active", panel.id === `tab-${tab}`);
       });
 
-      window.dispatchEvent(new Event("resize"));
+      window.clearTimeout(resizeTimer);
+      window.requestAnimationFrame(() => renderActiveTab(tab));
     });
   });
 };

@@ -801,6 +801,7 @@ textarea {
 @media (max-width: 767px) {
   .presentation-shell {
     padding: 0 16px 32px;
+    overflow-x: hidden;
   }
 
   .slide-tabs {
@@ -844,11 +845,15 @@ textarea {
   }
 
   .visual-grid {
+    display: flex;
+    flex-direction: column;
     gap: 14px;
     margin-top: 18px;
   }
 
   .chart-card {
+    width: 100%;
+    grid-column: 1 / -1 !important;
     padding: 14px;
     border-radius: 22px;
   }
@@ -859,12 +864,36 @@ textarea {
   }
 
   .chart-host {
-    min-height: 330px;
+    width: 100%;
+    min-height: 360px;
     border-radius: 18px;
   }
 
   .chart-host.tall {
-    min-height: 380px;
+    min-height: 420px;
+  }
+
+  .metric-grid,
+  .insight-grid,
+  .recommendation-grid,
+  .so-what-host,
+  .so-what-host.three,
+  #tab-pembuka .insight-grid {
+    width: 100%;
+    grid-column: 1 / -1 !important;
+  }
+
+  #tab-region .chart-card,
+  #tab-kategori .chart-card,
+  #tab-overview .chart-card,
+  #tab-tren-sales .chart-card,
+  #tab-customer .chart-card,
+  #tab-pembuka .chart-card,
+  #tab-kesimpulan .chart-card {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    grid-column: 1 / -1 !important;
   }
 
   .metric-card,
@@ -910,15 +939,31 @@ textarea {
 
 @media (max-width: 480px) {
   .presentation-shell {
-    padding: 0 12px 32px;
+    padding: 0 10px 32px;
+  }
+
+  .slide-header h1 {
+    font-size: clamp(24px, 7.2vw, 28px);
+  }
+
+  .chart-card {
+    padding: 12px;
+  }
+
+  .chart-card h2 {
+    font-size: 15px;
   }
 
   .chart-host {
-    min-height: 310px;
+    min-height: 360px;
   }
 
   .chart-host.tall {
-    min-height: 350px;
+    min-height: 420px;
+  }
+
+  .chart-tooltip {
+    max-width: calc(100vw - 24px);
   }
 
   .summary-table th,
