@@ -269,6 +269,12 @@ textarea {
   width: 100%;
 }
 
+.chart-host.table-host {
+  min-height: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .metric-grid,
 .insight-grid,
 .recommendation-grid {
@@ -601,10 +607,10 @@ textarea {
 
 .summary-table {
   width: 100%;
+  min-width: 860px;
   border-collapse: collapse;
   font-size: 12px;
   border-radius: 18px;
-  overflow: hidden;
 }
 
 .summary-table th,

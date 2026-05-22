@@ -33,7 +33,10 @@ const escapeHtml = value => String(value ?? "")
 
 const clearContainer = container => {
   const element = getElement(container);
-  if (element) element.innerHTML = "";
+  if (element) {
+    element.innerHTML = "";
+    element.classList.remove("table-host");
+  }
   return element;
 };
 
@@ -608,6 +611,7 @@ export function renderSummaryTable(container, data, options) {
     return;
   }
 
+  element.classList.add("table-host");
   const columns = options.columns || [];
   element.innerHTML = `
     <table class="summary-table">
